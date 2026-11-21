@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- XIV Map icon, "Aether Compass". Master copy: the .ico and .png files are rendered from this. -->
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbeab0"/>
+      <stop offset="0.45" stop-color="#d9b25a"/>
+      <stop offset="1" stop-color="#8a6420"/>
+    </linearGradient>
+    <radialGradient id="navy" cx="0.5" cy="0.4" r="0.75">
+      <stop offset="0" stop-color="#2a3a64"/>
+      <stop offset="1" stop-color="#0a0f1d"/>
+    </radialGradient>
+    <linearGradient id="crystal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6fbff"/>
+      <stop offset="0.4" stop-color="#6fd6f2"/>
+      <stop offset="1" stop-color="#1d6fa3"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7fe3ff" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#7fe3ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="6" y="6" width="244" height="244" rx="52" fill="url(#navy)"/>
+  <rect x="9" y="9" width="238" height="238" rx="49" fill="none" stroke="url(#gold)" stroke-width="5"/>
+  <circle cx="128" cy="128" r="78" fill="url(#glow)"/>
+  <circle cx="128" cy="128" r="98" fill="none" stroke="url(#gold)" stroke-width="8"/>
+  <circle cx="128" cy="128" r="86" fill="none" stroke="#c9a24a" stroke-width="2" opacity="0.8"/>
+  <polygon points="128,40 137,119 216,128 137,137 128,216 119,137 40,128 119,119" fill="url(#gold)" opacity="0.9"/>
+  <polygon points="128,20 138,30 128,40 118,30" fill="url(#gold)" stroke="#5a4012" stroke-width="2"/>
+  <polygon points="236,128 226,138 216,128 226,118" fill="url(#gold)" stroke="#5a4012" stroke-width="2"/>
+  <polygon points="128,236 118,226 128,216 138,226" fill="url(#gold)" stroke="#5a4012" stroke-width="2"/>
+  <polygon points="20,128 30,118 40,128 30,138" fill="url(#gold)" stroke="#5a4012" stroke-width="2"/>
+  <polygon points="100,106 113,128 104,162 90,134" fill="url(#crystal)" stroke="#0d3b5c" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="156,106 166,134 152,162 143,128" fill="url(#crystal)" stroke="#0d3b5c" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="128,70 150,118 128,182 106,118" fill="url(#crystal)" stroke="#0d3b5c" stroke-width="3.5" stroke-linejoin="round"/>
+  <polyline points="106,118 128,128 150,118" fill="none" stroke="#0d3b5c" stroke-width="2.5" opacity="0.7"/>
+  <line x1="128" y1="70" x2="128" y2="182" stroke="#ffffff" stroke-width="2" opacity="0.45"/>
+  <path d="M176,74 L179,82 L187,85 L179,88 L176,96 L173,88 L165,85 L173,82 Z" fill="#ffffff"/>
+  <path d="M82,170 L84,175 L89,177 L84,179 L82,184 L80,179 L75,177 L80,175 Z" fill="#ffffff" opacity="0.85"/>
+</svg>

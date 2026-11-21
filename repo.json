@@ -1,0 +1,34 @@
+[
+  {
+    "Author": "Phrantk Amico",
+    "Name": "Amico's Satchel",
+    "InternalName": "AmicosSatchel",
+    "AssemblyVersion": "1.0.0.0",
+    "TestingAssemblyVersion": "1.0.0.0",
+    "Punchline": "A satchel of small, handy features you can switch on and off.",
+    "Description": "A collection of small quality-of-life features in one plugin. Open it with /satchel to see every feature and turn each one on or off.\n\nIncludes:\n- Tails of Chance: shows your odds of finishing Wondrous Tails with one, two or three lines, right inside the journal.\n- Amico's Second Sight: a live map on your second screen. Shows your position, nearby objects, FATEs, Critical Engagements, hunt marks, vistas and more in the Amico's Second Sight desktop app, which it downloads for you. Optional: teleport and set your map flag from the map.\n- FC Command Center: a dashboard for your Free Company with an event calendar, company action rotation, chest notes, workshop projects and voyages, announcements and officer tasks. Share it with members using copy-and-paste share codes.",
+    "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/phrantkjay/AmicosSatchel",
+    "Tags": [
+      "utility",
+      "quality of life",
+      "wondrous tails",
+      "odds",
+      "map",
+      "minimap",
+      "free company",
+      "fc"
+    ],
+    "DalamudApiLevel": 15,
+    "TestingDalamudApiLevel": 15,
+    "IconUrl": "https://raw.githubusercontent.com/phrantkjay/AmicosSatchel/main/AmicosSatchel/images/icon.png",
+    "DownloadLinkInstall": "https://github.com/phrantkjay/AmicosSatchel/releases/download/v1.0.0.0/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/phrantkjay/AmicosSatchel/releases/download/v1.0.0.0/latest.zip",
+    "DownloadLinkTesting": "https://github.com/phrantkjay/AmicosSatchel/releases/download/v1.0.0.0/latest.zip",
+    "IsHide": false,
+    "IsTestingExclusive": false,
+    "AcceptsFeedback": true,
+    "LastUpdate": 1795297858,
+    "DownloadCount": 0
+  }
+]

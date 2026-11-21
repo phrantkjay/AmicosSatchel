@@ -1,0 +1,24 @@
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+  <PropertyGroup>
+    <Version>1.0.0.0</Version>
+    <Authors>Phrantk Amico</Authors>
+    <PackageLicenseExpression>PolyForm-Strict-1.0.0</PackageLicenseExpression>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The Amico's Second Sight module talks to its desktop map using the message definitions shared
+         with it, so both always agree. Needs the "XIV Map Project" folder next to this one. -->
+    <ProjectReference Include="..\..\XIV Map Project\XIVMap.Shared\XIVMap.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Dalamud shows a dev plugin's icon from images/icon.png (512px) beside the DLL.
+         The satchel window uses 128px images, which stay sharp at small sizes:
+         icon-128.png for its header and images/modules/*.png for each feature. -->
+    <None Include="images\icon.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="images\icon-128.png" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="images\modules\*.png" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

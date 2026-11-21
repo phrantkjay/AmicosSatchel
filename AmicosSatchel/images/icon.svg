@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Amico's Satchel icon: "Crystal Clasp" with an A monogram. Source for images/icon.png. -->
+  <defs>
+    <symbol id="crystal" viewBox="0 0 160 380">
+      <polygon points="80,0 0,140 80,380 160,140" fill="#4fb4f0"/>
+      <polygon points="80,0 0,140 80,160" fill="#fff" opacity=".28"/>
+      <polygon points="80,0 80,160 160,140" fill="#fff" opacity=".6"/>
+      <polygon points="0,140 80,160 80,380" fill="#000" opacity=".08"/>
+      <polygon points="80,160 160,140 80,380" fill="#000" opacity=".3"/>
+    </symbol>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#8fd8ff" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#8fd8ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="104" fill="#0e1636"/>
+  <rect x="22" y="22" width="468" height="468" rx="86" fill="none" stroke="#c9a24a" stroke-width="8"/>
+  <rect x="40" y="40" width="432" height="432" rx="70" fill="none" stroke="#c9a24a" stroke-width="2" opacity=".7"/>
+  <circle cx="256" cy="290" r="210" fill="url(#glow)" opacity=".6"/>
+  <path d="M196 196 C196 116 316 116 316 196" fill="none" stroke="#5a3218" stroke-width="22" stroke-linecap="round"/>
+  <rect x="108" y="186" width="296" height="222" rx="40" fill="#8a5530"/>
+  <path d="M140 376 H372" stroke="#6a3d20" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  <path d="M108 226 Q108 186 148 186 L364 186 Q404 186 404 226 L404 286 Q256 344 108 286 Z" fill="#6a3d20"/>
+  <path d="M124 278 Q256 326 388 278" fill="none" stroke="#e0b98a" stroke-width="4" stroke-dasharray="10 8" stroke-linecap="round"/>
+  <rect x="240" y="300" width="32" height="76" rx="8" fill="#6a3d20"/>
+  <path d="M108 226 Q108 186 148 186 L364 186 Q404 186 404 226 L404 286 Q256 344 108 286 Z" fill="none" stroke="#c9a24a" stroke-width="6"/>
+  <use xlink:href="#crystal" href="#crystal" x="236" y="286" width="40" height="96"/>
+  <path transform="translate(300 300) scale(.7)" fill="#eaf8ff" d="M0 -22 C3 -6 6 -3 22 0 C6 3 3 6 0 22 C-3 6 -6 3 -22 0 C-6 -3 -3 -6 0 -22 Z"/>
+  <circle cx="256" cy="236" r="34" fill="#5a3218" stroke="#c9a24a" stroke-width="5"/>
+  <circle cx="256" cy="236" r="27" fill="none" stroke="#c9a24a" stroke-width="1.5" opacity=".7"/>
+  <g transform="translate(256 238) scale(.17) translate(-256 -254)">
+    <path fill="#e2bd62" fill-rule="evenodd" d="M256 128 L360 380 H316 L292 320 H220 L196 380 H152 Z M256 206 L280 286 H232 Z"/>
+    <path d="M140 380 H200 M312 380 H372" stroke="#e2bd62" stroke-width="16" stroke-linecap="round"/>
+  </g>
+</svg>
