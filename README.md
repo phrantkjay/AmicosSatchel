@@ -69,24 +69,6 @@ The Share tab can also copy a Discord post with this week's events (as Discord t
 
 Members who only read the board can turn off **Officer tools** in the module's settings.
 
-## Building
-
-Requires the .NET SDK and a local XIVLauncher/Dalamud install. The Amico's Second Sight module uses the message definitions in `XIVMap.Shared`, so the `XIV Map Project` folder must sit next to this one.
-
-```
-dotnet build -c Release
-```
-
-Then add `AmicosSatchel/bin/x64/Release/AmicosSatchel.dll` under `/xlsettings` → Experimental → Dev Plugin Locations.
-
-## Adding a feature
-
-1. Create a folder under `AmicosSatchel/Modules/` for the feature.
-2. Add a class that derives from `Module`, giving it an id, name and description, and implementing `Enable` and `Disable`.
-3. Add an instance of it to the `Modules` list in `ModuleManager.cs`.
-
-It then shows up in the satchel automatically.
-
 ## License
 
 Copyright (c) 2026 Phrantk Amico. Source available under the [PolyForm Strict License 1.0.0](LICENSE).
