@@ -12,9 +12,9 @@ internal static class AppRelease {
     public const string FileName = "AmicosSecondSight.exe";
 
     /// <summary>SHA-256 of the exe, as lowercase hex. A download that doesn't match is thrown away.</summary>
-    public const string Sha256 = "077b9c688e3fc2e949216609d122315b286e5a541ec8e7d8656b3b1b98441ff0";
+    public const string Sha256 = "f588561f544bbf5ac0a6af76de857199e561736a5d67c64e3a89230a1fdfe901";
 
-    public const long SizeBytes = 66828879;
+    public const long SizeBytes = 66832463;
 
     /// <summary>The message format (XIVMap.Shared Protocol.Version) this build of the map speaks.</summary>
     public const int ProtocolVersion = 16;
