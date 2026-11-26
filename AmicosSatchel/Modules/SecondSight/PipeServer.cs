@@ -30,6 +30,7 @@ internal sealed class PipeServer : IDisposable {
     private PlayerMessage? latestPlayer;
     private ProgressMessage? latestProgress;
     private TravelInfoMessage? latestTravel;
+    private FriendsMessage? latestFriends;
     private volatile bool connected;
 
     public PipeServer(IPluginLog log, string pluginVersion) {
@@ -63,6 +64,12 @@ internal sealed class PipeServer : IDisposable {
     /// <summary>Teleport permission, Lifestream and costs; kept so every new connection gets it. Never blocks.</summary>
     public void PublishTravel(TravelInfoMessage travel) {
         Volatile.Write(ref latestTravel, travel);
+        Signal();
+    }
+
+    /// <summary>The online friends; kept so every new connection gets them. Never blocks.</summary>
+    public void PublishFriends(FriendsMessage friends) {
+        Volatile.Write(ref latestFriends, friends);
         Signal();
     }
 
@@ -106,6 +113,7 @@ internal sealed class PipeServer : IDisposable {
                 ZoneMessage? sentZone = null;
                 ProgressMessage? sentProgress = null;
                 TravelInfoMessage? sentTravel = null;
+                FriendsMessage? sentFriends = null;
                 while (pipe.IsConnected) {
                     await signal.WaitAsync(connection.Token);
 
@@ -119,6 +127,12 @@ internal sealed class PipeServer : IDisposable {
                     if (travel != null && travel != sentTravel) {
                         await Framing.WriteAsync(pipe, travel, ct);
                         sentTravel = travel;
+                    }
+
+                    var friends = Volatile.Read(ref latestFriends);
+                    if (friends != null && friends != sentFriends) {
+                        await Framing.WriteAsync(pipe, friends, ct);
+                        sentFriends = friends;
                     }
 
                     while (outgoing.TryDequeue(out var message))

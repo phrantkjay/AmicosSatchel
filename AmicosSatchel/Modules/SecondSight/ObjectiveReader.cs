@@ -138,6 +138,11 @@ internal static unsafe class ObjectiveReader {
             var raw = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)obj.Address;
             Services.Log.Information($"[markers] object {obj.ObjectKind}/{obj.SubKind} base {obj.BaseId} \"{obj.Name.TextValue}\" at {obj.Position} targetable {obj.IsTargetable} nameplate {raw->NamePlateIconId} event {raw->EventId.Id} render {raw->RenderFlags}");
         }
+        // Every kind of object around, with a few names, to spot content that uses unusual kinds.
+        foreach (var kind in Services.ObjectTable.Where(o => o.ObjectKind != Dalamud.Game.ClientState.Objects.Enums.ObjectKind.Pc).GroupBy(o => o.ObjectKind))
+            Services.Log.Information($"[markers] kind {kind.Key}: {kind.Count()}: " +
+                string.Join(", ", kind.GroupBy(o => (o.BaseId, o.Name.TextValue, o.IsTargetable)).Take(25)
+                    .Select(g => $"{g.Count()}x \"{g.Key.TextValue}\" base {g.Key.BaseId}{(g.Key.IsTargetable ? "" : " (untargetable)")}")));
         return count;
     }
 

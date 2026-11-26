@@ -92,6 +92,7 @@ public sealed partial class CommandCenterWindow : Window {
     public override void OnClose() => LeaveTab(currentTab);
 
     public override void Draw() {
+        using var content = SatchelStyle.PushContent(theme);
         DrawHeader();
 
         using var tabBar = ImRaii.TabBar("##FccTabs", ImGuiTabBarFlags.FittingPolicyScroll);

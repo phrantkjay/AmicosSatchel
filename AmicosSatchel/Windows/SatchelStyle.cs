@@ -52,18 +52,28 @@ public static class SatchelStyle {
             .Push(ImGuiCol.ResizeGripHovered, t.Border)
             .Push(ImGuiCol.ResizeGripActive, t.Border);
 
+        // Only window-level shapes here. Frame padding and spacing set the title bar's height and
+        // where Dalamud places its title-bar buttons, so those go in PushContent, inside Draw.
         var scale = ImGuiHelpers.GlobalScale;
         var styles = ImRaii.PushStyle(ImGuiStyleVar.WindowRounding, t.WindowRounding * scale)
             .Push(ImGuiStyleVar.WindowBorderSize, 1f)
             .Push(ImGuiStyleVar.WindowPadding, new Vector2(14, 14) * scale)
-            .Push(ImGuiStyleVar.FrameRounding, t.ControlRounding * scale)
-            .Push(ImGuiStyleVar.FrameBorderSize, 1f)
-            .Push(ImGuiStyleVar.FramePadding, new Vector2(10, 6) * scale)
             .Push(ImGuiStyleVar.PopupRounding, t.ControlRounding * scale)
-            .Push(ImGuiStyleVar.ItemSpacing, new Vector2(8, 8) * scale)
             .Push(ImGuiStyleVar.ScrollbarRounding, t.ControlRounding * scale);
 
         return new Scope(styles, colors);
+    }
+
+    /// <summary>
+    /// Pushes the theme's control shapes (padding, rounding, spacing). Call at the start of the
+    /// window's Draw and dispose at its end, so the title bar keeps Dalamud's normal layout.
+    /// </summary>
+    public static IDisposable PushContent(SatchelTheme t) {
+        var scale = ImGuiHelpers.GlobalScale;
+        return ImRaii.PushStyle(ImGuiStyleVar.FrameRounding, t.ControlRounding * scale)
+            .Push(ImGuiStyleVar.FrameBorderSize, 1f)
+            .Push(ImGuiStyleVar.FramePadding, new Vector2(10, 6) * scale)
+            .Push(ImGuiStyleVar.ItemSpacing, new Vector2(8, 8) * scale);
     }
 
     /// <summary>Draws a small rounded label, such as a category or a count.</summary>

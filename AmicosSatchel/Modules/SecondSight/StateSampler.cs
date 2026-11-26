@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -30,6 +31,10 @@ internal sealed class StateSampler : IDisposable {
     private readonly ProgressReader progress = new();
     private TimeSpan nextProgress;
     private TreasureSpotInfo? treasure;
+    // Friends' zones change rarely; the list is a few dozen entries at most.
+    private static readonly TimeSpan FriendsInterval = TimeSpan.FromSeconds(3);
+    private TimeSpan nextFriends;
+    private List<FriendInfo>? lastFriends;
     private static readonly TimeSpan MarkerLogInterval = TimeSpan.FromSeconds(10);
     private TimeSpan nextMarkerLog;
     private int lastMarkerSignature;
@@ -61,6 +66,16 @@ internal sealed class StateSampler : IDisposable {
                 pipe.PublishProgress(changed);
             // A deciphered treasure map changes rarely too.
             treasure = MapExtrasReader.ReadTreasure();
+        }
+
+        if (now >= nextFriends) {
+            nextFriends = now + FriendsInterval;
+            var friends = FriendReader.Read();
+            // Records compare lists by reference, so compare the friends themselves.
+            if (lastFriends == null || !lastFriends.SequenceEqual(friends)) {
+                lastFriends = friends;
+                pipe.PublishFriends(new FriendsMessage(friends));
+            }
         }
 
         // In PvP matches, log the game map's markers whenever they change, to learn how each
@@ -111,7 +126,8 @@ internal sealed class StateSampler : IDisposable {
                 ToVec3(obj.Position),
                 obj.Rotation,
                 ReadNamePlateIcon(obj),
-                HealthPercent(obj)));
+                HealthPercent(obj),
+                Spent: !obj.IsTargetable && IsIslandNode(obj)));
         }
 
         var fates = new List<FateInfo>();
@@ -142,8 +158,22 @@ internal sealed class StateSampler : IDisposable {
             MapExtrasReader.ReadFlag(), treasure, criticalEngagements);
     }
 
+    /// <summary>Names of Island Sanctuary gathering nodes (trees, rocks, crops…), any capitalisation.</summary>
+    private static readonly HashSet<string> IslandNodeNames = Services.DataManager.GetExcelSheet<Lumina.Excel.Sheets.MJIGatheringObject>()
+        .Select(o => o.Name.ValueNullable?.Singular.ExtractText() ?? "").Where(n => n.Length > 0)
+        .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+    private static bool IsIslandNode(IGameObject obj)
+        => obj.ObjectKind == ObjectKind.ReactionEventObject && IslandNodeNames.Contains(obj.Name.TextValue);
+
     /// <summary>Returns null for objects the map never shows (pets, mounts, minions, invisible helpers).</summary>
     private static ObjectCategory? Classify(IGameObject obj) {
+        // Island Sanctuary gathering nodes: "reaction" objects that all share one id, told apart
+        // only by name. Untargetable ones have been gathered and not respawned yet; they're sent
+        // too, marked Spent, so the map can show them faded.
+        if (IsIslandNode(obj))
+            return ObjectCategory.EventObject;
+
         switch (obj.ObjectKind) {
             case ObjectKind.Pc when obj is ICharacter pc:
                 if ((pc.StatusFlags & (StatusFlags.PartyMember | StatusFlags.AllianceMember)) != 0)
@@ -162,7 +192,8 @@ internal sealed class StateSampler : IDisposable {
                 };
 
             case ObjectKind.EventNpc:
-                return obj.Name.TextValue.Length > 0 ? ObjectCategory.Npc : null;
+                // Untargetable ones are hidden helpers (on the Island Sanctuary, dozens with internal names).
+                return obj.Name.TextValue.Length > 0 && obj.IsTargetable ? ObjectCategory.Npc : null;
 
             case ObjectKind.Treasure:
                 return ObjectCategory.Treasure;

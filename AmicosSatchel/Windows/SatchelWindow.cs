@@ -4,11 +4,13 @@ using System.Linq;
 using System.Numerics;
 using AmicosSatchel.Modules;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 using Dalamud.Interface.GameFonts;
 using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 
 namespace AmicosSatchel.Windows;
 
@@ -18,6 +20,7 @@ namespace AmicosSatchel.Windows;
 public sealed class SatchelWindow : Window, IDisposable {
     private const string Title = "Amico's Satchel";
     private const string Subtitle = "Small features you can switch on and off";
+    private const string KofiUrl = "https://ko-fi.com/phrantkjay";
     private const float IconSize = 56f;
     private const float CardPadding = 12f;
     private const float ModuleImageSize = 48f;
@@ -47,6 +50,14 @@ public sealed class SatchelWindow : Window, IDisposable {
         imagesFolder = Path.Combine(Services.PluginInterface.AssemblyLocation.DirectoryName!, "images");
         iconPath = Path.Combine(imagesFolder, "icon-128.png");
 
+        // A heart in the title bar that opens the Ko-fi page, for anyone who wants to support the plugin.
+        TitleBarButtons.Add(new TitleBarButton {
+            Icon = FontAwesomeIcon.Heart,
+            IconOffset = new Vector2(2, 1),
+            Click = _ => Util.OpenLink(KofiUrl),
+            ShowTooltip = () => ImGui.SetTooltip("Support Amico's Satchel on Ko-fi"),
+        });
+
         Size = new Vector2(520, 460);
         SizeCondition = ImGuiCond.FirstUseEver;
         SizeConstraints = new WindowSizeConstraints {
@@ -71,6 +82,7 @@ public sealed class SatchelWindow : Window, IDisposable {
     }
 
     public override void Draw() {
+        using var content = SatchelStyle.PushContent(theme);
         var scale = ImGuiHelpers.GlobalScale;
 
         DrawHeader(scale);

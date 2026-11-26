@@ -39,27 +39,34 @@ internal sealed unsafe class Teleporter : IDisposable {
 
     /// <summary>Pipe thread: just queue it; everything game-related happens on the game thread.</summary>
     private void OnMessage(Message message) {
-        if (message is TeleportRequest or SetFlagRequest or ClearFlagRequest) requests.Enqueue(message);
+        if (message is TeleportRequest or WorldTravelRequest or SetFlagRequest or ClearFlagRequest) requests.Enqueue(message);
     }
 
     private void OnUpdate(IFramework framework) {
         while (requests.TryDequeue(out var message)) {
             var (started, text) = message switch {
                 TeleportRequest teleport => Handle(teleport),
+                WorldTravelRequest world => Handle(world),
                 SetFlagRequest flag => SetFlag(flag),
                 ClearFlagRequest => ClearFlag(),
                 _ => (false, ""),
             };
+            if (message is TeleportRequest asked)
+                Services.Log.Information($"[Second Sight] Teleport asked by the map: {asked.Name} ({asked.AetheryteId}/{asked.SubIndex}{(asked.IsShard ? ", shard" : "")}) → {(started ? "started" : "not started")}: {text}");
+            else if (message is WorldTravelRequest travel)
+                Services.Log.Information($"[Second Sight] World travel asked by the map: {travel.Name} ({travel.WorldId}) → {(started ? "started" : "not started")}: {text}");
             if (text.Length > 0) pipe.Send(new TeleportResultMessage(started, text));
         }
 
         if (!pipe.IsConnected || DateTime.UtcNow < nextInfo) return;
         nextInfo = DateTime.UtcNow + InfoInterval;
         var allowed = configuration.SecondSightAllowTeleport;
+        var player = Services.ObjectTable.LocalPlayer;
         var info = new TravelInfoMessage(allowed, IsLifestreamLoaded(), allowed ? ReadDestinations() : [], allowed && SortsByExpansion(),
-            configuration.SecondSightAllowFlag);
+            configuration.SecondSightAllowFlag, player?.CurrentWorld.RowId ?? 0, player?.HomeWorld.RowId ?? 0);
         if (lastInfo is null || info.TeleportAllowed != lastInfo.TeleportAllowed || info.LifestreamAvailable != lastInfo.LifestreamAvailable
             || info.FlagAllowed != lastInfo.FlagAllowed
+            || info.CurrentWorldId != lastInfo.CurrentWorldId || info.HomeWorldId != lastInfo.HomeWorldId
             || info.ByExpansion != lastInfo.ByExpansion || !info.Destinations.SequenceEqual(lastInfo.Destinations)) {
             lastInfo = info;
             pipe.PublishTravel(info);
@@ -108,6 +115,38 @@ internal sealed unsafe class Teleporter : IDisposable {
         return StartTeleport(request.AetheryteId, lifestream, request.SubIndex)
             ? (true, $"Teleporting to {request.Name}.")
             : (false, $"The game didn't start the teleport to {request.Name}.");
+    }
+
+    /// <summary>
+    /// Another world, on this data center or another one in the same region: Lifestream's own
+    /// "/li World" does the whole trip (world visit or data center travel).
+    /// </summary>
+    private (bool Started, string Text) Handle(WorldTravelRequest request) {
+        if (!configuration.SecondSightAllowTeleport)
+            return (false, "Traveling from the map is turned off. Turn it on in /satchel → Amico's Second Sight.");
+        if (Services.ObjectTable.LocalPlayer is not { } player)
+            return (false, "Can't travel: not logged in.");
+        if (!IsLifestreamLoaded())
+            return (false, "World travel from the map needs the Lifestream plugin.");
+        if (WhyNot(player.IsCasting) is { } reason)
+            return (false, $"Can't travel right now: {reason}.");
+        if (Call<bool>("IsBusy"))
+            return (false, "Lifestream is busy with another trip. Try again in a moment.");
+
+        var worlds = Services.DataManager.GetExcelSheet<Lumina.Excel.Sheets.World>();
+        if (worlds.GetRowOrDefault(request.WorldId) is not { IsPublic: true } world
+            || worlds.GetRowOrDefault(player.CurrentWorld.RowId) is not { } here)
+            return (false, $"{request.Name} isn't a world you can travel to.");
+        if (request.WorldId == player.CurrentWorld.RowId)
+            return (false, $"You're already on {request.Name}.");
+
+        var name = world.Name.ExtractText();
+        // This Lumina's World sheet has the logical data center (Aether, Crystal, …) in Unknown0.
+        var otherDataCenter = world.Unknown0 != here.Unknown0;
+        CallAction("ExecuteCommand", name);
+        return (true, otherDataCenter
+            ? $"Lifestream is taking you to {name} (data center travel: this takes a minute or two)."
+            : $"Lifestream is taking you to {name}.");
     }
 
     /// <summary>Puts the game's own map flag where the player chose on the Second Sight map.</summary>
